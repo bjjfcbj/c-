@@ -12,142 +12,141 @@
 
 using namespace std;
 
-struct node {
-    int sec;
-    int cost;
-    int vip;
-    int server = 0;
-
-    node() = default;
-    node(int s, int w, int v)
-	: sec(s)
-	, cost(w > 120 ? 120 : w)
-	, vip(v)
-    {
-    }
-
-    bool operator<(node& n)
-    {
-	return sec < n.sec;
-    }
-};
-
-struct table {
-    int sec = 28800;
-    int num = 0;
-    int vip = 0;
-    int mark = 0;
-
-    bool operator<(table& t)
-    {
-	if (sec != t.sec)
-	    return sec < t.sec;
-	else
-	    return mark < t.mark;
-    }
-};
-
-void deal(vector<table>& vec_t, vector<node>& vec_n)
+struct node
 {
-    int turn = 0, temp = 0;
-    vector<int> sign(vec_n.size(), 0);
-    while (turn != vec_n.size()) {
-	temp = 0;
-	sort(vec_t.begin(), vec_t.end());
-	if (vec_t[0].sec >= 75600||vec_n[turn].sec>=75600) {
-	    break;
+	int sec;
+	int cost;
+	int vip;
+	int server = 0;
+	int num = 0;
+
+	node() = default;
+	node(int s, int w, int v, int n)
+		: sec(s)
+		, cost(w > 120 ? 120 : w)
+		, vip(v)
+		, num(n)
+	{
 	}
-	if (vec_t[0].vip) {
-	    for (int i = turn; i < vec_n.size() && vec_n[i].sec <= vec_t[0].sec; ++i) {
-		if (vec_n[i].vip && !sign[i]) {
-		    temp = i;
-		    sign[i] = 1;
-		    break;
+
+	bool operator<(node& n)
+	{
+		return sec < n.sec;
+	}
+};
+
+struct table
+{
+	int sec = 28800;
+	int num = 0;
+	int vip = 0;
+	int mark = 0;
+
+	bool operator<(table& t)
+	{
+		if (sec != t.sec)
+			return sec < t.sec;
+		else
+			return mark < t.mark;
+	}
+};
+
+int fvtab(vector<table>& vec, int sec)
+{
+	for (auto i = 0; i < vec.size(); ++i)
+	{
+		if (vec[i].vip && vec[i].sec <= sec)
+		{
+			return i;
 		}
-	    }
-	    if (temp != 0) {
-		vec_n[temp].server = vec_t[0].sec;
-		vec_t[0].sec = vec_n[temp].server + vec_n[temp].cost * 60;
-		vec_t[0].num += 1;
-		continue;
-	    }
-	    if (!sign[turn]) {
-		vec_n[turn].server = vec_n[turn].sec < vec_t[0].sec ? vec_t[0].sec : vec_n[turn].sec;
-		vec_t[0].sec = vec_n[turn].server + vec_n[turn].cost * 60;
-		vec_t[0].num += 1;
-	    }
-	} else {
-	    if (!sign[turn]) {
-		vec_n[turn].server = vec_n[turn].sec < vec_t[0].sec ? vec_t[0].sec : vec_n[turn].sec;
-		vec_t[0].sec = vec_n[turn].server + vec_n[turn].cost * 60;
-		vec_t[0].num += 1;
-	    }
 	}
-	turn += 1;
-    }
+	return -1;
+}
+
+void deal(vector<table>& vec_t, vector<node>& vec_n, vector<node>& vip)
+{
+	int sign[vec_n.size()] = {0}, vipt = 0;
+	for (int i = 0; i < vec_n.size(); ++i)
+	{
+		if (vec_n[i].vip)
+		{
+			if (!sign[i])
+			{
+				vipt = fvtab(vec_t, vec_n[i].sec)
+					if (vipt == -1) {
+
+					}else{
+						sign[vipt]=1;
+					}
+			}
+		}
+	}
 }
 
 void printtime(int a)
 {
-    int temp;
-    temp = a / 3600;
-    a %= 3600;
-    cout << setw(2) << setfill('0') << temp << ':';
-    temp = a / 60;
-    a %= 60;
-    cout << setw(2) << setfill('0') << temp << ':';
-    cout << setw(2) << setfill('0') << a << ' ';
+	printf("%02d:%02d:%02d ", a / 3600, a / 60 % 60, a % 60);
 }
 
 bool nodecmp(node& a, node& b)
 {
-    if (a.server != b.server)
-	return a.server < b.server;
-    else
-	return a.sec < b.sec;
+	if (a.server != b.server)
+		return a.server < b.server;
+	else
+		return a.sec < b.sec;
 }
 
 bool tablecmp(table& a, table& b)
 {
-    return a.mark < b.mark;
+	return a.mark < b.mark;
 }
 
 int main()
 {
-    int N, M, K, h, m, s, w, v;
-    char c;
-    vector<node> vec;
-    cin >> N;
-    while (N--) {
-	scanf("%d%c%d%c%d %d %d\n", &h, &c, &m, &c, &s, &w, &v);
-	vec.push_back(node(h * 3600 + m * 60 + s, w, v));
-    }
-    cin >> M;
-    vector<table> tab(M);
-    for (int i = 0; i < tab.size(); ++i) {
-	tab[i].mark = i + 1;
-    }
-    cin >> K;
-    while (K--) {
-	cin >> h;
-	tab[h - 1].vip = 1;
-    }
-    sort(vec.begin(), vec.end());
-    deal(tab, vec);
-    sort(vec.begin(), vec.end(), nodecmp);
-    sort(tab.begin(), tab.end(), tablecmp);
-    for (auto& v : vec) {
-	if (v.server) {
-	    printtime(v.sec);
-	    printtime(v.server);
-	    cout << (v.server - v.sec + 30) / 60 << endl;
+	int N, M, K, h, m, s, w, v, temp = 0;
+	char c;
+	vector<node> vec;
+	vector<node> vip;
+	cin >> N;
+	while (N--)
+	{
+		scanf("%d%c%d%c%d %d %d\n", &h, &c, &m, &c, &s, &w, &v);
+		vec.push_back(node(h * 3600 + m * 60 + s, w, v, temp));
+		if (v)vip.push_back(node(h * 3600 + m * 60 + s, w, v, temp));
+		temp += 1;
 	}
-    }
-    for (int i = 0; i < tab.size(); ++i) {
-	if (i != tab.size() - 1)
-	    cout << tab[i].num << ' ';
-	else
-	    cout << tab[i].num;
-    }
-    return 0;
+	cin >> M;
+	vector<table> tab(M);
+	for (int i = 0; i < tab.size(); ++i)
+	{
+		tab[i].mark = i + 1;
+	}
+	cin >> K;
+	while (K--)
+	{
+		cin >> h;
+		tab[h - 1].vip = 1;
+	}
+	sort(vec.begin(), vec.end());
+	sort(vip.begin(), vip.end());
+	deal(tab, vec, vip);
+	sort(vec.begin(), vec.end(), nodecmp);
+	sort(tab.begin(), tab.end(), tablecmp);
+	for (auto& v : vec)
+	{
+		if (v.server)
+		{
+			printtime(v.sec);
+			printtime(v.server);
+			cout << (v.server - v.sec + 30) / 60 << endl;
+		}
+	}
+	for (int i = 0; i < tab.size(); ++i)
+	{
+		if (i != tab.size() - 1)
+			cout << tab[i].num << ' ';
+		else
+			cout << tab[i].num;
+	}
+	return 0;
 }
