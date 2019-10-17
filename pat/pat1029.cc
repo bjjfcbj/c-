@@ -16,16 +16,13 @@ long sone[NUM], stwo[NUM];
 
 using namespace std;
 
-int deal(long *s1, long *s2, int s1_s, int len1, int s2_s, int len2)
+int deal(long *s1, long *s2, int s1_s, int len1, int s2_s, int len2, int r, int l)
 {
-	if (len1 == 1 && len2 == 1)return (s1[s1_s] + s2[s2_s]) / 2;
-	if (!len1)return (s2[s2_s + len2 / 2] + s2[s2_s + (len2 - 1)]) / 2;
-	if (!len2)return (s1[s1_s + len1 / 2] + s1[s1_s + (len1 - 1)]) / 2;
 }
 
 int main()
 {
-	int N, s1 = 0, s2 = 0;
+	int N, s1 = 0, s2 = 0, right = 0, left = 0;
 	long temp;
 	scanf("%d", &N);
 	while (N--)
