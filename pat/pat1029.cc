@@ -12,29 +12,53 @@
 
 #define NUM 200001
 
-long sone[NUM], stwo[NUM];
+long sone[NUM];
 
 using namespace std;
 
-int deal(long *s1, long *s2, int s1_s, int len1, int s2_s, int len2, int r, int l)
-{
-}
-
 int main()
 {
-	int N, s1 = 0, s2 = 0, right = 0, left = 0;
+	int N, s1 = 0, len = 0, med = 0, i = 0;
 	long temp;
 	scanf("%d", &N);
+	len += N;
 	while (N--)
 	{
 		scanf("%ld", &temp);
 		sone[s1++] = temp;
 	}
 	scanf("%d", &N);
+	len += N;
+	len = (len + 1) / 2;
 	while (N--)
 	{
 		scanf("%ld", &temp);
-		stwo[s2++] = temp;
+		while (i < s1 && sone[i] < temp)
+		{
+			med += 1;
+			if (med == len)
+			{
+				printf("%ld\n", sone[i]);
+				break;
+			}
+			i += 1;
+		}
+		med += 1;
+		if (med == len)
+		{
+			printf("%ld\n", temp);
+			break;
+		}
+	}
+	while (med < len)
+	{
+		med += 1;
+		if (med == len)
+		{
+			printf("%ld\n", sone[i]);
+			break;
+		}
+		i += 1;
 	}
 	return 0;
 }
