@@ -13,4 +13,4 @@ command:=git
 .PHONY: all
 
 all:
-	$(command) add .&&$(command) commit -m ..&&$(command) push
+	cd pat&&make clean&&cd ..&&$(command) add .&&$(command) commit -m ..&&$(command) push
