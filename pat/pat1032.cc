@@ -12,23 +12,28 @@
 
 using namespace std;
 
-int sign[100001];
+int data[100010], sign[100010];
+
+void deal(int a1, int a2)
+{
+	for (int i = a1; data[i] != -1; i = data[i])sign[i] = 1;
+	for (; a2 != -1 &&  !sign[a2]; a2 = data[a2]);
+	if (a2 == -1)printf("-1\n");
+	else printf("%05d\n", a2);
+}
 
 int main()
 {
-	int adr1, adr2, N, i, j, res = 100000;
+	int adr1, adr2, N, i, j;
 	char k;
-	memset(sign, 0, 100000);
 	scanf("%d %d %d", &adr1, &adr2, &N);
-	sign[adr1] = 1;
-	sign[adr2] = 1;
+	memset(data, 0, 100010);
+	memset(sign, 0, 100010);
 	while (N--)
 	{
 		scanf("%d %c %d", &i, &k, &j);
-		if (j != -1)sign[j] += 1;
-		if (sign[j] == 2)res = j;
+		data[i] = j;
 	}
-	if (res != 100000)printf("%05d\n", res);
-	else printf("-1\n");
+	deal(adr1, adr2);
 	return 0;
 }
