@@ -12,8 +12,6 @@
 
 using namespace std;
 
-int gra[][2500];
-
 int main()
 {
 	int N, K, course, num;
