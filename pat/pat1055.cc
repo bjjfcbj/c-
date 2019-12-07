@@ -12,77 +12,50 @@
 
 using namespace std;
 
-struct node
+struct person
 {
-	int worth;
-	int age;
-	char* name;
-
-	node() = default;
-	node(int a, char* b, int c): worth(a), name(b), age(c) {}
-	bool operator<(node& n)
+	char Name[20];
+	int Age, Net_Worth;
+	bool operator<(person p)
 	{
-		if (worth == n.worth)
-		{
-			if (age == n.age)
-				return strcmp(name, n.name) <= 0;
-			else
-				return age < n.age;
-		}
+		if (Net_Worth != p.Net_Worth)
+			return Net_Worth > p.Net_Worth;
+		else if (Age != p.Age)
+			return Age < p.Age;
 		else
-			return worth > n.worth;
+			return strcmp(Name, p.Name) <= 0;
 	}
 };
-
-vector<node> res;
-vector<node> vecs[201];
-char buf[10];
-
-char* readbuf(int len)
-{
-	char* temp = (char*)malloc(len);
-	for (int i = 0; i < len; ++i)
-		temp[i] = buf[i];
-	return temp;
-}
-
-void deal(int num, int age1, int age2, int k)
-{
-	res.clear();
-	for (int i = age1; i <= age2; ++i)
-	{
-		for (auto v : vecs[i])
-			res.push_back(v);
-	}
-	sort(res.begin(), res.end());
-	int len = res.size();
-	printf("Case #%d:\n", k);
-	if (len)
-	{
-		for (int i = 0; i < num && i < len; ++i)
-		{
-			printf("%s %d %d\n", res[i].name, res[i].age, res[i].worth);
-		}
-	}
-	else
-	{
-		printf("None\n");
-	}
-}
-
 int main()
 {
-	int N, K, age, worth, num;
+	int N, K;
+	vector<person> vv, v;
+	person p;
 	scanf("%d %d", &N, &K);
-	while (N--)
+	for (int i = 0; i < N; i++)
 	{
-		scanf("%s %d %d", buf, &age, &worth);
-		vecs[age].push_back(node(worth, readbuf(strlen(buf)), age));
+		scanf("%s %d %d", p.Name, &p.Age, &p.Net_Worth);
+		vv.push_back(p);
 	}
-	for (int i = 0; i < K; ++i)
+	sort(vv.begin(), vv.end());//在读入所有记录后就排序，不然局部排序会超时
+	int M, Amin, Amax;
+	bool flag = false;
+	for (int i = 0; i < K; i++)
 	{
-		scanf("%d %d %d", &num, &age, &worth);
-		deal(num, age, worth, i + 1);
+		scanf("%d %d %d", &M, &Amin, &Amax);
+		printf("Case #%d:\n", i + 1);
+		flag = false;
+		for (int k = 0, count = 0; k < vv.size() && count < M; k++) //对记录进行筛选，注意M表示最多输出的个数
+		{
+			if (vv[k].Age >= Amin && vv[k].Age <= Amax)
+			{
+				printf("%s %d %d\n", vv[k].Name, vv[k].Age, vv[k].Net_Worth);
+				count++;
+				flag = true;
+			}
+		}
+		if (!flag)
+			printf("None\n");
 	}
 	return 0;
 }
